@@ -1,5 +1,5 @@
 import { getActionsByTaskId, getTasks, getCodeBlocksByActionId, getScreenshotsByActionId } from './storage';
-import { Action, ActionCodeBlock } from '../types';
+import { ActionCodeBlock } from '../types';
 import { highlightBSL } from './prism-bsl';
 import { getInitials } from './initials';
 

@@ -85,7 +85,6 @@ export function highlightBSLToHTML(code: string): string {
     html = html.replace(regex, (match, p1, offset, string) => {
       // Проверяем, не находимся ли мы внутри уже подсвеченного элемента
       const before = string.substring(Math.max(0, offset - 50), offset);
-      const after = string.substring(offset, Math.min(string.length, offset + match.length + 50));
       
       // Если перед нами открывающий span или после нас закрывающий - пропускаем
       if (before.includes('<span') && !before.includes('</span>')) {

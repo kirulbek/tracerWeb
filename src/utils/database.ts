@@ -1,4 +1,4 @@
-import { Task, Action, ActionTemplate, ActionCodeBlock, ActionScreenshot, Manager } from '../types';
+import { Task, Action, ActionTemplate, ActionCodeBlock, ActionScreenshot, Manager, TaskStatus } from '../types';
 
 let db: any = null;
 let isInitialized = false;
@@ -8,6 +8,7 @@ async function loadSqlJs() {
     // В Vite sql.js нужно загружать правильно
     // Используем динамический импорт
     
+    // @ts-ignore - sql.js не имеет типов
     const sqlJsModule = await import('sql.js');
     
     // Проверяем все возможные варианты экспорта
