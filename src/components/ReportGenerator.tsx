@@ -13,7 +13,7 @@ interface ReportGeneratorProps {
   onTaskIdProcessed?: () => void;
 }
 
-const ReportGenerator = ({ reportType, onReportTypeChange, initialTaskId, onTaskIdProcessed }: ReportGeneratorProps) => {
+const ReportGenerator = ({ reportType, initialTaskId, onTaskIdProcessed }: ReportGeneratorProps) => {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<string>('');

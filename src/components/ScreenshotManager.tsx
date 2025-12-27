@@ -80,9 +80,10 @@ const ScreenshotManager = ({ screenshots, onAdd, onDelete }: ScreenshotManagerPr
     // Добавляем обработчик события paste для поддержки Ctrl+V
     const container = containerRef.current;
     if (container) {
-      container.addEventListener('paste', handlePasteEvent as EventListener);
+      const handler = (e: Event) => handlePasteEvent(e as ClipboardEvent);
+      container.addEventListener('paste', handler);
       return () => {
-        container.removeEventListener('paste', handlePasteEvent as EventListener);
+        container.removeEventListener('paste', handler);
       };
     }
   }, []);

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authApi, UserResponse } from '../utils/api';
+import { authApi } from '../utils/api';
 
 interface AuthContextType {
   user: { userId: string; username: string; fullName?: string; isAdmin: boolean } | null;
@@ -38,7 +38,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (username: string, password: string) => {
     const response = await authApi.login(username, password);
-    setUser(response.user);
+    setUser({
+      userId: response.user.id,
+      username: response.user.username,
+      fullName: response.user.fullName,
+      isAdmin: response.user.isAdmin
+    });
   };
 
   const logout = () => {

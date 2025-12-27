@@ -102,12 +102,12 @@ const ArchivePage = ({ onGenerateReport }: ArchivePageProps) => {
     await loadData();
   };
 
-  const getManagerName = (taskId: string) => {
-    const task = tasks.find(t => t.id === taskId);
-    if (!task) return '-';
-    // Здесь можно добавить логику получения имени менеджера
-    return '-';
-  };
+  // const getManagerName = (taskId: string) => {
+  //   const task = tasks.find(t => t.id === taskId);
+  //   if (!task) return '-';
+  //   // Здесь можно добавить логику получения имени менеджера
+  //   return '-';
+  // };
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('ru-RU', {
