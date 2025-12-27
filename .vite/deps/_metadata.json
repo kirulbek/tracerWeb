@@ -1,0 +1,49 @@
+{
+  "hash": "1e44146a",
+  "configHash": "0177be78",
+  "lockfileHash": "c64313ce",
+  "browserHash": "c52a2b8c",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "be10fb3e",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "6ec6c685",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "ad8faa4f",
+      "needsInterop": true
+    },
+    "sql.js": {
+      "src": "../../node_modules/sql.js/dist/sql-wasm.js",
+      "file": "sql__js.js",
+      "fileHash": "d5cfd8ac",
+      "needsInterop": true
+    },
+    "react-quill": {
+      "src": "../../node_modules/react-quill/lib/index.js",
+      "file": "react-quill.js",
+      "fileHash": "c98d4409",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-4EHXIYLK": {
+      "file": "chunk-4EHXIYLK.js"
+    },
+    "chunk-FUA5X66W": {
+      "file": "chunk-FUA5X66W.js"
+    },
+    "chunk-JVWSFFO4": {
+      "file": "chunk-JVWSFFO4.js"
+    }
+  }
+}
