@@ -43,6 +43,16 @@ const ActionForm = ({ actionId, taskId, onSave, onCancel }: ActionFormProps) => 
     loadTasks();
   }, []);
 
+  // Загружаем задачу при изменении taskId
+  useEffect(() => {
+    if (formData.taskId) {
+      const task = tasks.find(t => t.id === formData.taskId);
+      setCurrentTask(task || null);
+    } else {
+      setCurrentTask(null);
+    }
+  }, [formData.taskId, tasks]);
+
   useEffect(() => {
     if (actionId) {
       loadAction();
