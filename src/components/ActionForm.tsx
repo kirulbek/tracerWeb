@@ -141,10 +141,6 @@ const ActionForm = ({ actionId, taskId, onSave, onCancel }: ActionFormProps) => 
       alert('Выберите задачу');
       return;
     }
-    if (!formData.shortDescription || formData.shortDescription.trim() === '') {
-      alert('Введите краткое описание');
-      return;
-    }
 
     try {
       // Если редактируем, получаем существующее действие для createdAt
