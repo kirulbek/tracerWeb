@@ -14,6 +14,21 @@ function convertTaskFromApi(task: any): Task {
 }
 
 function convertActionFromApi(action: any): Action {
+  // Парсим дату из формата "YYYY-MM-DD HH:MM:SS" (локальное время клиента)
+  // Создаем Date объект, интерпретируя строку как локальное время
+  let createdAt: Date;
+  if (action.createdAt) {
+    // Если дата в формате "YYYY-MM-DD HH:MM:SS" или "YYYY-MM-DDTHH:MM:SS"
+    const dateStr = action.createdAt.replace('T', ' ').substring(0, 19);
+    const [datePart, timePart] = dateStr.split(' ');
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hours, minutes, seconds] = timePart.split(':').map(Number);
+    // Создаем Date в локальном времени браузера
+    createdAt = new Date(year, month - 1, day, hours, minutes, seconds);
+  } else {
+    createdAt = new Date();
+  }
+  
   return {
     id: action.id,
     taskId: action.taskId,
@@ -24,7 +39,7 @@ function convertActionFromApi(action: any): Action {
     timeHours: action.timeHours || 0,
     timeMinutes: action.timeMinutes || 0,
     orderIndex: action.orderIndex || 0,
-    createdAt: new Date(action.createdAt)
+    createdAt
   };
 }
 
