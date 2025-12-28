@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { getInitials } from '../utils/initials';
+import logo from '../assets/logo.png';
 
 type Tab = 'tasks' | 'actions' | 'reports' | 'managers' | 'templates' | 'archive' | 'users';
 type ReportType = 'transfer' | 'general';
@@ -41,7 +42,14 @@ const Layout = ({
           padding: '0 2rem'
         }}>
           <div>
-            <h1>Трассировка изменений 1С</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+              <img 
+                src={logo} 
+                alt="Арсансофт" 
+                style={{ height: '40px', width: 'auto' }}
+              />
+              <h1>Трассировка изменений 1С</h1>
+            </div>
             <p className="subtitle">Система документирования изменений конфигурации</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -165,7 +173,24 @@ const Layout = ({
       </main>
 
       <footer className="app-footer">
-        <p>&copy; 2025 Трассировка изменений 1С</p>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          maxWidth: '1500px', 
+          margin: '0 auto', 
+          padding: '0 2rem' 
+        }}>
+          <p>&copy; 2025 Трассировка изменений 1С</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>Разработано</span>
+            <img 
+              src={logo} 
+              alt="Арсансофт" 
+              style={{ height: '24px', width: 'auto', opacity: 0.8 }}
+            />
+          </div>
+        </div>
       </footer>
     </div>
   );

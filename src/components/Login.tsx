@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import logo from '../assets/logo.png';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -38,6 +39,13 @@ const Login = () => {
         width: '100%',
         maxWidth: '400px'
       }}>
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <img 
+            src={logo} 
+            alt="Арсансофт" 
+            style={{ height: '50px', width: 'auto', marginBottom: '1rem' }}
+          />
+        </div>
         <h2 style={{ marginBottom: '1.5rem', textAlign: 'center', color: '#667eea' }}>
           Вход в систему
         </h2>
