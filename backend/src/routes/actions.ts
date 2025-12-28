@@ -56,10 +56,11 @@ router.post('/',
       const action = createAction(req.body, userId);
       res.status(201).json(action);
     } catch (error: any) {
+      console.error('Ошибка создания пункта:', error);
       if (error.message === 'Задача не найдена') {
         return res.status(404).json({ error: error.message });
       }
-      res.status(500).json({ error: 'Ошибка создания пункта' });
+      res.status(500).json({ error: error.message || 'Ошибка создания пункта' });
     }
   }
 );
@@ -73,8 +74,9 @@ router.put('/:id', (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Пункт не найден' });
     }
     res.json(action);
-  } catch (error) {
-    res.status(500).json({ error: 'Ошибка обновления пункта' });
+  } catch (error: any) {
+    console.error('Ошибка обновления пункта:', error);
+    res.status(500).json({ error: error.message || 'Ошибка обновления пункта' });
   }
 });
 

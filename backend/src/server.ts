@@ -58,7 +58,10 @@ app.use('/api/screenshots', screenshotRoutes);
 // Error handling
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err);
-  res.status(500).json({ error: 'Внутренняя ошибка сервера' });
+  console.error('Error stack:', err.stack);
+  console.error('Request body:', req.body);
+  console.error('Request params:', req.params);
+  res.status(500).json({ error: 'Внутренняя ошибка сервера', details: process.env.NODE_ENV === 'development' ? err.message : undefined });
 });
 
 app.listen(PORT, () => {
