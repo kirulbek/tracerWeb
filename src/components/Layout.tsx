@@ -41,16 +41,25 @@ const Layout = ({
           margin: '0 auto',
           padding: '0 2rem'
         }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div style={{ 
+              backgroundColor: 'white', 
+              padding: '0.5rem 1rem', 
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            }}>
               <img 
                 src={logo} 
                 alt="Арсансофт" 
-                style={{ height: '40px', width: 'auto' }}
+                style={{ height: '45px', width: 'auto', display: 'block' }}
               />
-              <h1>Трассировка изменений 1С</h1>
             </div>
-            <p className="subtitle">Система документирования изменений конфигурации</p>
+            <div>
+              <h1 style={{ marginBottom: '0.5rem' }}>Трассировка изменений 1С</h1>
+              <p className="subtitle">Система документирования изменений конфигурации</p>
+            </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <span style={{ fontSize: '0.9rem', opacity: 0.9 }}>

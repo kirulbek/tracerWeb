@@ -2,6 +2,7 @@ import { getActionsByTaskId, getTasks, getCodeBlocksByActionId, getScreenshotsBy
 import { ActionCodeBlock } from '../types';
 import { highlightBSL } from './prism-bsl';
 import { getInitials } from './initials';
+import logo from '../assets/logo.png';
 
 function stripHTML(html: string): string {
   const tmp = document.createElement('DIV');
@@ -21,6 +22,23 @@ function getDescriptionText(description: string): string {
   return stripHTML(description);
 }
 
+// Функция для конвертации изображения в base64
+async function imageToBase64(imagePath: string): Promise<string> {
+  try {
+    const response = await fetch(imagePath);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error('Ошибка загрузки логотипа:', error);
+    return '';
+  }
+}
+
 export const generateHTMLReport = async (taskId: string, userFullName?: string): Promise<string> => {
   const tasks = await getTasks();
   const task = tasks.find(t => t.id === taskId);
@@ -29,6 +47,9 @@ export const generateHTMLReport = async (taskId: string, userFullName?: string):
   }
 
   const actions = (await getActionsByTaskId(taskId)).filter(action => !action.excludeFromDescription);
+  
+  // Конвертируем логотип в base64
+  const logoBase64 = await imageToBase64(logo);
 
   let html = `
 <!DOCTYPE html>
@@ -47,10 +68,23 @@ export const generateHTMLReport = async (taskId: string, userFullName?: string):
       padding: 20px;
       background-color: #fff;
     }
+    .report-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #667eea;
+    }
+    .report-logo {
+      height: 60px;
+      width: auto;
+    }
     h1 {
       color: #667eea;
-      border-bottom: 3px solid #667eea;
-      padding-bottom: 10px;
+      margin: 0;
+      padding: 0;
+      border: none;
     }
     h2 {
       color: #764ba2;
@@ -194,7 +228,10 @@ export const generateHTMLReport = async (taskId: string, userFullName?: string):
   </style>
 </head>
 <body>
-  <h1>${task.name}</h1>
+  <div class="report-header">
+    ${logoBase64 ? `<img src="${logoBase64}" alt="Арсансофт" class="report-logo" />` : ''}
+    <h1>${task.name}</h1>
+  </div>
 `;
 
   for (let index = 0; index < actions.length; index++) {
@@ -308,6 +345,9 @@ export const generateCompactReport = async (taskId: string, userFullName?: strin
   
   let totalHours = 0;
   let totalMinutes = 0;
+  
+  // Конвертируем логотип в base64
+  const logoBase64 = await imageToBase64(logo);
 
   let html = `
 <!DOCTYPE html>
@@ -326,11 +366,23 @@ export const generateCompactReport = async (taskId: string, userFullName?: strin
       padding: 20px;
       background-color: #fff;
     }
+    .report-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #667eea;
+    }
+    .report-logo {
+      height: 60px;
+      width: auto;
+    }
     h1 {
       color: #667eea;
-      border-bottom: 3px solid #667eea;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
+      margin: 0;
+      padding: 0;
+      border: none;
     }
     table {
       width: 100%;
@@ -380,7 +432,10 @@ export const generateCompactReport = async (taskId: string, userFullName?: strin
   </style>
 </head>
 <body>
-  <h1>${task.name}</h1>
+  <div class="report-header">
+    ${logoBase64 ? `<img src="${logoBase64}" alt="Арсансофт" class="report-logo" />` : ''}
+    <h1>${task.name}</h1>
+  </div>
   <table>
     <thead>
       <tr>
