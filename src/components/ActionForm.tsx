@@ -319,7 +319,7 @@ const ActionForm = ({ actionId, taskId, onSave, onCancel }: ActionFormProps) => 
                 type="text"
                 value={formData.shortDescription}
                 onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
-                placeholder="Краткое описание *"
+                placeholder="Краткое описание"
               />
             </div>
             <div className="form-group" style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: 0 }}>

@@ -237,10 +237,13 @@ export const generateHTMLReport = async (taskId: string, userFullName?: string):
   for (let index = 0; index < actions.length; index++) {
     const action = actions[index];
     const actionTitle = action.name || `Пункт ${index + 1}`;
+    // Проверяем, есть ли описание (не пустое и не только HTML теги)
+    const hasDescription = action.description && getDescriptionText(action.description).trim().length > 0;
+    
     html += `
   <div class="action-item">
     <div class="action-title">${actionTitle}</div>
-    <div>${action.description}</div>
+    ${hasDescription ? `<div>${action.description}</div>` : ''}
 `;
 
     // Code blocks - загружаем из базы данных
