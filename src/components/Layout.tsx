@@ -193,11 +193,20 @@ const Layout = ({
           <p>&copy; 2025 Трассировка изменений 1С</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>Разработано</span>
-            <img 
-              src={logo} 
-              alt="Арсансофт" 
-              style={{ height: '24px', width: 'auto', opacity: 0.8 }}
-            />
+            <div style={{ 
+              backgroundColor: 'white', 
+              padding: '0.4rem 0.8rem', 
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+            }}>
+              <img 
+                src={logo} 
+                alt="Арсансофт" 
+                style={{ height: '24px', width: 'auto', display: 'block' }}
+              />
+            </div>
           </div>
         </div>
       </footer>
