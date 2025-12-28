@@ -9,6 +9,9 @@ function convertTaskFromApi(task: any): Task {
     description: task.description,
     status: task.status as TaskStatus,
     notes: task.notes,
+    // Если значение null или пустая строка, возвращаем undefined
+    blockStartMarker: task.blockStartMarker && task.blockStartMarker.trim() !== '' ? task.blockStartMarker : undefined,
+    blockEndMarker: task.blockEndMarker && task.blockEndMarker.trim() !== '' ? task.blockEndMarker : undefined,
     createdAt: new Date(task.createdAt)
   };
 }
@@ -93,7 +96,9 @@ export async function saveTask(task: Task): Promise<Task> {
     name: task.name,
     description: task.description,
     status: task.status,
-    notes: task.notes
+    notes: task.notes,
+    blockStartMarker: task.blockStartMarker,
+    blockEndMarker: task.blockEndMarker
   };
 
   if (task.id && task.id.startsWith('task-') && task.id.length > 20) {

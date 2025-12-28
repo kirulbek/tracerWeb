@@ -1,7 +1,7 @@
 // Точная подсветка синтаксиса BSL в стиле 1С:Предприятие
 // Основано на анализе реального редактора 1С
 
-export function highlightBSL(code: string): string {
+export function highlightBSL(code: string, blockStartMarker?: string, blockEndMarker?: string): string {
   if (!code || code.trim() === '') return code;
   
   // Очистка от HTML-тегов и сущностей (всегда очищаем, чтобы переобработать)
@@ -19,20 +19,48 @@ export function highlightBSL(code: string): string {
   // Разбиваем на строки для обработки
   const lines = cleanCode.split('\n');
   
-  // Определяем блоки между //+АрсанСофт и //-АрсанСофт
+  // Определяем блоки между маркерами
   const customBlockRanges: Array<{ start: number; end: number }> = [];
-  let blockStart: number | null = null;
   
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    // Ищем начало блока: //+АрсанСофт или //+Арсансофт
-    if (/^\/\/\+[А-Яа-яЁё]*[Аа]рсан[Сс]офт/i.test(line)) {
-      blockStart = i;
-    }
-    // Ищем конец блока: //-АрсанСофт или //-Арсансофт
-    else if (/^\/\/-[А-Яа-яЁё]*[Аа]рсан[Сс]офт/i.test(line) && blockStart !== null) {
-      customBlockRanges.push({ start: blockStart, end: i });
-      blockStart = null;
+  // Определяем используемые маркеры
+  // Если blockStartMarker === undefined или null - используем "АрсанСофт" (по умолчанию)
+  // Если blockStartMarker === "" (пустая строка) - не ищем блоки (пользователь очистил)
+  // Если blockStartMarker задан - используем его
+  const startMarkerValue = blockStartMarker === undefined || blockStartMarker === null
+    ? 'АрсанСофт' // По умолчанию для новых задач
+    : blockStartMarker.trim() === ''
+    ? null // Пользователь очистил поле - не ищем блоки
+    : blockStartMarker.trim(); // Используем заданное значение
+  
+  const endMarkerValue = blockEndMarker === undefined || blockEndMarker === null
+    ? startMarkerValue // По умолчанию используем маркер начала
+    : blockEndMarker.trim() === ''
+    ? null // Пользователь очистил поле
+    : blockEndMarker.trim(); // Используем заданное значение
+  
+  // Если startMarkerValue === null, значит пользователь очистил поле - не ищем блоки
+  if (startMarkerValue !== null) {
+    const startMarker = startMarkerValue;
+    const endMarker = endMarkerValue || startMarker; // Если endMarker очищен, используем startMarker
+    
+    // Экранируем специальные символы для регулярного выражения
+    const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const startPattern = new RegExp(`^//${escapeRegex(startMarker)}$`, 'i');
+    const endPattern = new RegExp(`^//${escapeRegex(endMarker)}$`, 'i');
+    
+    let blockStart: number | null = null;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      // Ищем начало блока: //{startMarker}
+      if (startPattern.test(line)) {
+        blockStart = i;
+      }
+      // Ищем конец блока: //{endMarker}
+      else if (endPattern.test(line) && blockStart !== null) {
+        customBlockRanges.push({ start: blockStart, end: i });
+        blockStart = null;
+      }
     }
   }
   

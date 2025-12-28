@@ -18,6 +18,9 @@ export function getTasksByUserId(userId: string): Task[] {
     description: t.description || undefined,
     status: t.status,
     notes: t.notes || undefined,
+    // Если значение null или пустая строка, возвращаем undefined
+    blockStartMarker: t.block_start_marker && t.block_start_marker.trim() !== '' ? t.block_start_marker : undefined,
+    blockEndMarker: t.block_end_marker && t.block_end_marker.trim() !== '' ? t.block_end_marker : undefined,
     userId: t.user_id,
     createdAt: t.created_at
   }));
@@ -34,6 +37,9 @@ export function getTaskById(id: string, userId: string): Task | null {
     description: task.description || undefined,
     status: task.status,
     notes: task.notes || undefined,
+    // Если значение null или пустая строка, возвращаем undefined
+    blockStartMarker: task.block_start_marker && task.block_start_marker.trim() !== '' ? task.block_start_marker : undefined,
+    blockEndMarker: task.block_end_marker && task.block_end_marker.trim() !== '' ? task.block_end_marker : undefined,
     userId: task.user_id,
     createdAt: task.created_at
   };
@@ -45,14 +51,16 @@ export function createTask(input: CreateTaskInput, userId: string): Task {
   const status = input.status || 'Ожидание';
 
   db.prepare(`
-    INSERT INTO tasks (id, name, description, status, notes, user_id, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+    INSERT INTO tasks (id, name, description, status, notes, block_start_marker, block_end_marker, user_id, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
   `).run(
     id,
     input.name,
     input.description || null,
     status,
     input.notes || null,
+    input.blockStartMarker || null,
+    input.blockEndMarker || null,
     userId
   );
 
@@ -84,6 +92,14 @@ export function updateTask(id: string, input: UpdateTaskInput, userId: string): 
   if (input.notes !== undefined) {
     updates.push('notes = ?');
     values.push(input.notes || null);
+  }
+  if (input.blockStartMarker !== undefined) {
+    updates.push('block_start_marker = ?');
+    values.push(input.blockStartMarker || null);
+  }
+  if (input.blockEndMarker !== undefined) {
+    updates.push('block_end_marker = ?');
+    values.push(input.blockEndMarker || null);
   }
 
   if (updates.length === 0) {

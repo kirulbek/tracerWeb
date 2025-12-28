@@ -16,6 +16,7 @@ interface ActionFormProps {
 
 const ActionForm = ({ actionId, taskId, onSave, onCancel }: ActionFormProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [formData, setFormData] = useState({
     taskId: taskId || '',
     name: '',
@@ -423,7 +424,11 @@ const ActionForm = ({ actionId, taskId, onSave, onCancel }: ActionFormProps) => 
                                 
                                 let highlightedCode: string;
                                 if (codeBlock.language === 'BSL') {
-                                  highlightedCode = highlightBSL(text);
+                                  highlightedCode = highlightBSL(
+                                    text, 
+                                    currentTask?.blockStartMarker, 
+                                    currentTask?.blockEndMarker
+                                  );
                                 } else {
                                   highlightedCode = text
                                     .replace(/&/g, '&amp;')
@@ -476,6 +481,8 @@ const ActionForm = ({ actionId, taskId, onSave, onCancel }: ActionFormProps) => 
                 setShowCodeEditor(false);
                 setEditingCodeBlock(undefined);
               }}
+              blockStartMarker={currentTask?.blockStartMarker}
+              blockEndMarker={currentTask?.blockEndMarker}
             />
           </div>
         </div>

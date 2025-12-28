@@ -6,6 +6,8 @@ export interface Task {
   description?: string;
   status: TaskStatus;
   notes?: string;
+  blockStartMarker?: string;  // Маркер начала блока (например: "АрсанСофт")
+  blockEndMarker?: string;    // Маркер конца блока (например: "АрсанСофт")
   createdAt: Date;
 }
 

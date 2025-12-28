@@ -6,6 +6,8 @@ export interface Task {
   description?: string;
   status: TaskStatus;
   notes?: string;
+  blockStartMarker?: string;  // Маркер начала блока (например: "АрсанСофт")
+  blockEndMarker?: string;    // Маркер конца блока (например: "АрсанСофт")
   userId: string;
   createdAt: string;
 }
@@ -15,6 +17,8 @@ export interface CreateTaskInput {
   description?: string;
   status?: TaskStatus;
   notes?: string;
+  blockStartMarker?: string;
+  blockEndMarker?: string;
 }
 
 export interface UpdateTaskInput {
@@ -22,6 +26,8 @@ export interface UpdateTaskInput {
   description?: string;
   status?: TaskStatus;
   notes?: string;
+  blockStartMarker?: string;
+  blockEndMarker?: string;
 }
 
 

@@ -40,7 +40,8 @@ function runMigrations() {
   // Список миграций в порядке выполнения
   const migrations = [
     '001_create_tables.sql',
-    '003_add_full_name_to_users.sql'
+    '003_add_full_name_to_users.sql',
+    '004_add_block_markers_to_tasks.sql'
   ];
 
   for (const migration of migrations) {
@@ -58,6 +59,25 @@ function runMigrations() {
             console.log(`Migration ${migration} executed`);
           } else {
             console.log(`Migration ${migration} skipped (column already exists)`);
+          }
+        } else if (migration === '004_add_block_markers_to_tasks.sql') {
+          // Проверяем, существуют ли колонки block_start_marker и block_end_marker
+          const tableInfo = db.prepare("PRAGMA table_info(tasks)").all() as any[];
+          const hasStartMarker = tableInfo.some((col: any) => col.name === 'block_start_marker');
+          const hasEndMarker = tableInfo.some((col: any) => col.name === 'block_end_marker');
+          
+          if (!hasStartMarker) {
+            db.exec('ALTER TABLE tasks ADD COLUMN block_start_marker TEXT');
+            console.log(`Migration ${migration}: added block_start_marker`);
+          }
+          if (!hasEndMarker) {
+            db.exec('ALTER TABLE tasks ADD COLUMN block_end_marker TEXT');
+            console.log(`Migration ${migration}: added block_end_marker`);
+          }
+          if (hasStartMarker && hasEndMarker) {
+            console.log(`Migration ${migration} skipped (columns already exist)`);
+          } else {
+            console.log(`Migration ${migration} executed`);
           }
         } else {
           const sql = readFileSync(migrationPath, 'utf-8');

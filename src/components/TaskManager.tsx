@@ -17,7 +17,9 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
     description: '',
     status: 'Ожидание' as TaskStatus,
     notes: '',
-    managerId: ''
+    managerId: '',
+    blockStartMarker: '',
+    blockEndMarker: ''
   });
 
   // Статусы для отображения колонок (без Архив)
@@ -45,7 +47,9 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
       description: '',
       status: 'Ожидание',
       notes: '',
-      managerId: ''
+      managerId: '',
+      blockStartMarker: '',
+      blockEndMarker: ''
     });
     setShowForm(true);
   };
@@ -58,7 +62,9 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
       description: task.description || '',
       status: task.status,
       notes: task.notes || '',
-      managerId: taskManagers.length > 0 ? taskManagers[0].id : ''
+      managerId: taskManagers.length > 0 ? taskManagers[0].id : '',
+      blockStartMarker: task.blockStartMarker || '',
+      blockEndMarker: task.blockEndMarker || ''
     });
     setShowForm(true);
   };
@@ -71,6 +77,8 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
       description: formData.description,
       status: formData.status,
       notes: formData.notes,
+      blockStartMarker: formData.blockStartMarker.trim() === '' ? undefined : formData.blockStartMarker.trim(),
+      blockEndMarker: formData.blockEndMarker.trim() === '' ? undefined : formData.blockEndMarker.trim(),
       createdAt: editingTask?.createdAt || new Date()
     };
 
@@ -202,6 +210,32 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
                   rows={3}
                   placeholder="Логины, пароли, доступы и другая информация"
                 />
+              </div>
+              <div className="form-group">
+                <label htmlFor="task-block-start-marker">Маркер начала блока кода</label>
+                <input
+                  id="task-block-start-marker"
+                  type="text"
+                  value={formData.blockStartMarker}
+                  onChange={(e) => setFormData({ ...formData, blockStartMarker: e.target.value })}
+                  placeholder="АрсанСофт (по умолчанию, если пусто)"
+                />
+                <small style={{ display: 'block', marginTop: '0.25rem', color: '#666', fontSize: '0.85rem' }}>
+                  Текст после // для начала блока (например: "АрсанСофт" или "Тимур ФТО: 001"). Если пусто, используется "АрсанСофт"
+                </small>
+              </div>
+              <div className="form-group">
+                <label htmlFor="task-block-end-marker">Маркер конца блока кода</label>
+                <input
+                  id="task-block-end-marker"
+                  type="text"
+                  value={formData.blockEndMarker}
+                  onChange={(e) => setFormData({ ...formData, blockEndMarker: e.target.value })}
+                  placeholder="АрсанСофт (по умолчанию, если пусто)"
+                />
+                <small style={{ display: 'block', marginTop: '0.25rem', color: '#666', fontSize: '0.85rem' }}>
+                  Текст после // для конца блока. Если пусто, используется значение маркера начала
+                </small>
               </div>
               <div className="form-actions">
                 <button type="submit" className="btn btn-primary">Сохранить</button>

@@ -6,6 +6,8 @@ interface CodeBlockEditorProps {
   codeBlock?: ActionCodeBlock;
   onSave: (codeBlock: Omit<ActionCodeBlock, 'actionId' | 'orderIndex'>) => void;
   onCancel: () => void;
+  blockStartMarker?: string;
+  blockEndMarker?: string;
 }
 
 // Функция для очистки кода от HTML и нормализации переносов строк
@@ -25,7 +27,7 @@ const normalizeCodeText = (text: string | undefined): string => {
     .replace(/\r/g, '\n'); // Нормализуем Mac переносы
 };
 
-const CodeBlockEditor = ({ codeBlock, onSave, onCancel }: CodeBlockEditorProps) => {
+const CodeBlockEditor = ({ codeBlock, onSave, onCancel, blockStartMarker, blockEndMarker }: CodeBlockEditorProps) => {
 
   const [formData, setFormData] = useState({
     language: codeBlock?.language || 'BSL',
@@ -53,11 +55,11 @@ const CodeBlockEditor = ({ codeBlock, onSave, onCancel }: CodeBlockEditorProps) 
     
     // Обновляем предпросмотр при изменении кода
     if (formData.codeText) {
-      editorContainerRef.current.innerHTML = highlightBSL(formData.codeText);
+      editorContainerRef.current.innerHTML = highlightBSL(formData.codeText, blockStartMarker, blockEndMarker);
     } else {
       editorContainerRef.current.innerHTML = '';
     }
-  }, [formData.codeText, formData.language]);
+  }, [formData.codeText, formData.language, blockStartMarker, blockEndMarker]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -203,7 +205,7 @@ const CodeBlockEditor = ({ codeBlock, onSave, onCancel }: CodeBlockEditorProps) 
                   wordWrap: 'break-word'
                 }}
                 dangerouslySetInnerHTML={{ 
-                  __html: highlightBSL(formData.codeText) 
+                  __html: highlightBSL(formData.codeText, blockStartMarker, blockEndMarker) 
                 }}
               />
             </div>
