@@ -221,7 +221,7 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
                   placeholder="АрсанСофт (по умолчанию, если пусто)"
                 />
                 <small style={{ display: 'block', marginTop: '0.25rem', color: '#666', fontSize: '0.85rem' }}>
-                  Текст после // для начала блока (например: "АрсанСофт" или "Тимур ФТО: 001"). Если пусто, используется "АрсанСофт"
+                  Текст после // для начала блока (например: "АрсанСофт" или "Арс 0001"). Если пусто, используется "АрсанСофт"
                 </small>
               </div>
               <div className="form-group">
