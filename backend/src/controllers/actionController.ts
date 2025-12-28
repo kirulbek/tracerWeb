@@ -74,7 +74,7 @@ export function createAction(input: CreateActionInput, userId: string): Action {
     id,
     input.taskId,
     input.name || null,
-    input.description,
+    input.description || '',
     input.shortDescription || null,
     input.excludeFromDescription ? 1 : 0,
     input.timeHours || 0,

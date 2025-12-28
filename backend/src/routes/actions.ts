@@ -42,8 +42,7 @@ router.get('/:id', (req: Request, res: Response) => {
 // POST /api/actions
 router.post('/',
   [
-    body('taskId').notEmpty().withMessage('taskId обязателен'),
-    body('description').notEmpty().withMessage('Описание обязательно')
+    body('taskId').notEmpty().withMessage('taskId обязателен')
   ],
   (req: Request, res: Response) => {
     const errors = validationResult(req);
