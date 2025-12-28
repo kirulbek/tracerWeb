@@ -155,6 +155,9 @@ const ActionForm = ({ actionId, taskId, onSave, onCancel }: ActionFormProps) => 
         }
       }
 
+      // Для нового действия используем текущее время клиента
+      const clientTime = actionId ? existingCreatedAt : new Date();
+
       const action: Action = {
         id: actionId || `action-${Date.now()}`,
         taskId: formData.taskId,
@@ -165,7 +168,7 @@ const ActionForm = ({ actionId, taskId, onSave, onCancel }: ActionFormProps) => 
         timeHours: formData.timeHours,
         timeMinutes: formData.timeMinutes,
         orderIndex: 0,
-        createdAt: existingCreatedAt
+        createdAt: clientTime
       };
 
       const savedAction = await saveAction(action);

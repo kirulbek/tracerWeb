@@ -154,7 +154,7 @@ export async function getActionsByTaskId(taskId: string): Promise<Action[]> {
 }
 
 export async function saveAction(action: Action): Promise<Action> {
-  const actionData = {
+  const actionData: any = {
     taskId: action.taskId,
     name: action.name,
     description: action.description,
@@ -164,6 +164,11 @@ export async function saveAction(action: Action): Promise<Action> {
     timeMinutes: action.timeMinutes,
     orderIndex: action.orderIndex
   };
+
+  // При создании нового действия отправляем время клиента в ISO формате
+  if (!action.id || !action.id.startsWith('action-') || action.id.length <= 20) {
+    actionData.createdAt = action.createdAt.toISOString();
+  }
 
   // Проверяем, существует ли действие (если ID начинается с 'action-' и имеет правильный формат)
   if (action.id && action.id.startsWith('action-') && action.id.length > 20) {

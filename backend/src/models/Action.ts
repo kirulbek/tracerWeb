@@ -20,6 +20,7 @@ export interface CreateActionInput {
   timeHours?: number;
   timeMinutes?: number;
   orderIndex?: number;
+  createdAt?: string; // Время клиента в ISO формате
 }
 
 export interface UpdateActionInput {

@@ -66,10 +66,21 @@ export function createAction(input: CreateActionInput, userId: string): Action {
   const db = getDb();
   const id = `action-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   const orderIndex = input.orderIndex ?? 0;
+  
+  // Используем время клиента, если передано, иначе текущее время сервера
+  let createdAt: string;
+  if (input.createdAt) {
+    // Конвертируем ISO строку в формат SQLite (YYYY-MM-DD HH:MM:SS)
+    const clientDate = new Date(input.createdAt);
+    createdAt = clientDate.toISOString().replace('T', ' ').substring(0, 19);
+  } else {
+    // Fallback на время сервера, если время клиента не передано
+    createdAt = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  }
 
   db.prepare(`
     INSERT INTO actions (id, task_id, name, description, short_description, exclude_from_description, time_hours, time_minutes, order_index, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     id,
     input.taskId,
@@ -79,7 +90,8 @@ export function createAction(input: CreateActionInput, userId: string): Action {
     input.excludeFromDescription ? 1 : 0,
     input.timeHours || 0,
     input.timeMinutes || 0,
-    orderIndex
+    orderIndex,
+    createdAt
   );
 
   const action = getActionById(id, userId);
