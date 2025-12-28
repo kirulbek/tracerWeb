@@ -16,13 +16,6 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
-    // TODO: УДАЛИТЬ ПЕРЕД ПУБЛИКАЦИЕЙ НА СЕРВЕР - прокси нужен только для локальной разработки
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-      }
-    },
     fs: {
       // Разрешаем доступ к node_modules
       strict: false
