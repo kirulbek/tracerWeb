@@ -70,12 +70,19 @@ export function createAction(input: CreateActionInput, userId: string): Action {
   // Используем время клиента, если передано, иначе текущее время сервера
   let createdAt: string;
   if (input.createdAt) {
-    // Конвертируем ISO строку в формат SQLite (YYYY-MM-DD HH:MM:SS)
-    const clientDate = new Date(input.createdAt);
-    createdAt = clientDate.toISOString().replace('T', ' ').substring(0, 19);
+    // Время клиента приходит в формате "YYYY-MM-DDTHH:MM:SS" (локальное время клиента)
+    // Конвертируем в формат SQLite "YYYY-MM-DD HH:MM:SS"
+    createdAt = input.createdAt.replace('T', ' ').substring(0, 19);
   } else {
     // Fallback на время сервера, если время клиента не передано
-    createdAt = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    const serverDate = new Date();
+    const year = serverDate.getFullYear();
+    const month = String(serverDate.getMonth() + 1).padStart(2, '0');
+    const day = String(serverDate.getDate()).padStart(2, '0');
+    const hours = String(serverDate.getHours()).padStart(2, '0');
+    const minutes = String(serverDate.getMinutes()).padStart(2, '0');
+    const seconds = String(serverDate.getSeconds()).padStart(2, '0');
+    createdAt = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
   db.prepare(`

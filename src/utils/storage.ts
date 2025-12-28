@@ -171,8 +171,16 @@ export async function saveAction(action: Action): Promise<Action> {
     const updated = await api.put<any>(`/actions/${action.id}`, actionData);
     return convertActionFromApi(updated);
   } else {
-    // Создание нового действия - отправляем время клиента в ISO формате
-    actionData.createdAt = action.createdAt.toISOString();
+    // Создание нового действия - отправляем время клиента в локальном формате
+    // Форматируем время клиента как "YYYY-MM-DD HH:MM:SS" (без конвертации в UTC)
+    const clientDate = action.createdAt;
+    const year = clientDate.getFullYear();
+    const month = String(clientDate.getMonth() + 1).padStart(2, '0');
+    const day = String(clientDate.getDate()).padStart(2, '0');
+    const hours = String(clientDate.getHours()).padStart(2, '0');
+    const minutes = String(clientDate.getMinutes()).padStart(2, '0');
+    const seconds = String(clientDate.getSeconds()).padStart(2, '0');
+    actionData.createdAt = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     const created = await api.post<any>('/actions', actionData);
     return convertActionFromApi(created);
   }
