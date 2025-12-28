@@ -19,52 +19,73 @@ export function highlightBSL(code: string, blockStartMarker?: string, blockEndMa
   // Разбиваем на строки для обработки
   const lines = cleanCode.split('\n');
   
+  // Сохраняем информацию о пустых строках в исходном коде
+  const originalEmptyLines = new Set<number>();
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].trim() === '') {
+      originalEmptyLines.add(i);
+    }
+  }
+  
   // Определяем блоки между маркерами
   const customBlockRanges: Array<{ start: number; end: number }> = [];
   
   // Определяем используемые маркеры
-  // Если blockStartMarker === undefined или null - используем "АрсанСофт" (по умолчанию)
-  // Если blockStartMarker === "" (пустая строка) - не ищем блоки (пользователь очистил)
+  // Если blockStartMarker не задан или пустой - не ищем блоки
   // Если blockStartMarker задан - используем его
-  const startMarkerValue = blockStartMarker === undefined || blockStartMarker === null
-    ? 'АрсанСофт' // По умолчанию для новых задач
-    : blockStartMarker.trim() === ''
-    ? null // Пользователь очистил поле - не ищем блоки
+  const startMarkerValue = (blockStartMarker === undefined || blockStartMarker === null || blockStartMarker.trim() === '')
+    ? null // Маркер не задан или пустой - не ищем блоки
     : blockStartMarker.trim(); // Используем заданное значение
   
-  const endMarkerValue = blockEndMarker === undefined || blockEndMarker === null
-    ? startMarkerValue // По умолчанию используем маркер начала
-    : blockEndMarker.trim() === ''
-    ? null // Пользователь очистил поле
+  const endMarkerValue = (blockEndMarker === undefined || blockEndMarker === null || blockEndMarker.trim() === '')
+    ? null // Маркер не задан или пустой
     : blockEndMarker.trim(); // Используем заданное значение
   
-  // Если startMarkerValue === null, значит пользователь очистил поле - не ищем блоки
-  if (startMarkerValue !== null) {
+  // Если startMarkerValue === null или endMarkerValue === null, значит маркеры не заданы - не ищем блоки
+  // Оба маркера должны быть заданы для работы
+  if (startMarkerValue !== null && endMarkerValue !== null) {
     const startMarker = startMarkerValue;
-    const endMarker = endMarkerValue || startMarker; // Если endMarker очищен, используем startMarker
+    const endMarker = endMarkerValue;
     
     // Экранируем специальные символы для регулярного выражения
     const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const startPattern = new RegExp(`^//${escapeRegex(startMarker)}$`, 'i');
-    const endPattern = new RegExp(`^//${escapeRegex(endMarker)}$`, 'i');
+    // Разрешаем пробелы и другие символы после маркера (например: //КУ-001 или //КУ-001 )
+    // Маркер уже очищен от пробелов при сохранении (как СокрЛП в 1С), но в коде могут быть пробелы после //
+    const startPattern = new RegExp(`^//${escapeRegex(startMarker)}(\\s|$)`, 'i');
+    const endPattern = new RegExp(`^//${escapeRegex(endMarker)}(\\s|$)`, 'i');
     
     let blockStart: number | null = null;
+    const isSameMarker = startMarker === endMarker; // Если маркеры одинаковые
     
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-      // Ищем начало блока: //{startMarker}
-      if (startPattern.test(line)) {
-        blockStart = i;
-      }
-      // Ищем конец блока: //{endMarker}
-      else if (endPattern.test(line) && blockStart !== null) {
-        customBlockRanges.push({ start: blockStart, end: i });
-        blockStart = null;
+      const isStartMarker = startPattern.test(line);
+      const isEndMarker = endPattern.test(line);
+      
+      if (isStartMarker || isEndMarker) {
+        if (blockStart === null) {
+          // Начало нового блока
+          blockStart = i;
+        } else {
+          // Конец текущего блока (или начало нового, если маркеры одинаковые)
+          if (isSameMarker) {
+            // Если маркеры одинаковые, закрываем предыдущий блок и начинаем новый
+            customBlockRanges.push({ start: blockStart, end: i });
+            blockStart = i; // Начинаем новый блок с этой же строки
+          } else if (isEndMarker) {
+            // Если маркеры разные и это маркер конца
+            customBlockRanges.push({ start: blockStart, end: i });
+            blockStart = null;
+          }
+        }
       }
     }
+    
   }
   
   const processedLines: string[] = [];
+  // Сохраняем соответствие между индексами обработанных строк и исходных
+  const lineIndexMap: number[] = [];
 
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
     let line = lines[lineIndex];
@@ -145,24 +166,97 @@ export function highlightBSL(code: string, blockStartMarker?: string, blockEndMa
       }
     }
     
-    // Проверяем начало и конец блока АрсанСофт
+    // Проверяем, является ли строка началом или концом блока
     const isBlockStart = customBlockRanges.some(range => lineIndex === range.start);
     const isBlockEnd = customBlockRanges.some(range => lineIndex === range.end);
     
-    // Если это начало блока АрсанСофт, добавляем открывающий div
+    
+    // Если это начало блока, добавляем открывающий div
     if (isBlockStart) {
       resultLine = '<div style="background-color: #f3ffe6; border-left: 4px solid #ffc107; padding: 2px 8px; margin: 0; display: block;">' + resultLine;
     }
     
-    // Если это конец блока АрсанСофт, добавляем закрывающий div
+    // Строки внутри блока (между началом и концом) - без дополнительных div
+    // Они уже внутри открывающего div от начала блока
+    
+    // Если это конец блока, добавляем закрывающий div
     if (isBlockEnd) {
       resultLine = resultLine + '</div>';
     }
     
     processedLines.push(resultLine);
+    lineIndexMap.push(lineIndex); // Сохраняем соответствие индексов
   }
 
-  return processedLines.join('<br>');
+  // Объединяем строки, сохраняя оригинальную структуру (включая пустые строки)
+  // Особое внимание: сохраняем пустые строки перед началом блока и после конца блока
+  let result = '';
+  for (let i = 0; i < processedLines.length; i++) {
+    const line = processedLines[i];
+    const prevLine = i > 0 ? processedLines[i - 1] : '';
+    const isLineEmpty = line.trim() === '';
+    const isLineBlockStart = line.trim().startsWith('<div style="background-color: #f3ffe6');
+    const isLineBlockEnd = line.trim().endsWith('</div>');
+    const isPrevLineEmpty = prevLine.trim() === '';
+    const isPrevLineBlockEnd = prevLine.trim().endsWith('</div>');
+    
+    // Если это не первая строка, добавляем <br>
+    if (result !== '') {
+      // Если текущая строка - начало блока
+      if (isLineBlockStart) {
+        // Если предыдущая строка была пустой - сохраняем её (добавляем <br> для пустой строки)
+        if (isPrevLineEmpty) {
+          result += '<br>';
+        } else if (!isPrevLineBlockEnd) {
+          // Если предыдущая строка не пустая и не конец блока - добавляем <br>
+          result += '<br>';
+        }
+        // Если предыдущая строка - конец блока, не добавляем <br> (блоки идут подряд)
+      } else if (isLineBlockEnd) {
+        // Если текущая строка - конец блока
+        // Если следующая строка пустая - она будет обработана в следующей итерации
+        // Если предыдущая строка не пустая и не начало блока - добавляем <br>
+        if (!isPrevLineEmpty && !prevLine.trim().startsWith('<div style="background-color: #f3ffe6')) {
+          result += '<br>';
+        }
+      } else if (isPrevLineBlockEnd) {
+        // После закрывающего </div> блока
+        // Проверяем, была ли пустая строка в исходном коде после конца блока
+        const prevOriginalIndex = lineIndexMap[i - 1]; // Индекс предыдущей строки в исходном коде (конец блока)
+        const currentOriginalIndex = lineIndexMap[i]; // Индекс текущей строки в исходном коде
+        
+        // Если между концом блока и текущей строкой была пустая строка в исходном коде
+        const hadEmptyLineAfter = currentOriginalIndex > prevOriginalIndex + 1 && 
+          originalEmptyLines.has(prevOriginalIndex + 1);
+        
+        if (hadEmptyLineAfter) {
+          // Была пустая строка в исходном коде - добавляем <br> для неё
+          result += '<br>';
+        }
+        
+        // Добавляем <br> для текущей строки только если:
+        // 1. Текущая строка не пустая
+        // 2. И строки НЕ идут подряд (была пустая строка между ними ИЛИ есть промежуток)
+        if (!isLineEmpty) {
+          // Если строки идут подряд (currentOriginalIndex === prevOriginalIndex + 1) - НЕ добавляем <br>
+          // Если между ними была пустая строка или есть промежуток - добавляем <br>
+          if (currentOriginalIndex > prevOriginalIndex + 1) {
+            // Есть промежуток (пустые строки) - <br> уже добавлен выше для пустой строки
+            // Добавляем <br> для текущей строки
+            result += '<br>';
+          }
+          // Если currentOriginalIndex === prevOriginalIndex + 1, строки идут подряд - НЕ добавляем <br>
+        }
+      } else {
+        // Обычная ситуация - добавляем <br>
+        result += '<br>';
+      }
+    }
+    
+    result += line;
+  }
+  
+  return result;
 }
 
 // Функция для подсветки части кода (без комментариев и строк)

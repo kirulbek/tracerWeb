@@ -71,14 +71,19 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    // TODO: ВЕРНУТЬ ОБРАТНО ПЕРЕД ПУБЛИКАЦИЕЙ - автоматически удаляем пробелы (как СокрЛП в 1С)
+    // Удаляем пробелы в начале и конце маркеров при сохранении
+    const trimmedStartMarker = formData.blockStartMarker.trim();
+    const trimmedEndMarker = formData.blockEndMarker.trim();
+    
     const task: Task = {
       id: editingTask?.id || `task-${Date.now()}`,
       name: formData.name,
       description: formData.description,
       status: formData.status,
       notes: formData.notes,
-      blockStartMarker: formData.blockStartMarker.trim() === '' ? undefined : formData.blockStartMarker.trim(),
-      blockEndMarker: formData.blockEndMarker.trim() === '' ? undefined : formData.blockEndMarker.trim(),
+      blockStartMarker: trimmedStartMarker === '' ? undefined : trimmedStartMarker,
+      blockEndMarker: trimmedEndMarker === '' ? undefined : trimmedEndMarker,
       createdAt: editingTask?.createdAt || new Date()
     };
 
@@ -218,11 +223,8 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
                   type="text"
                   value={formData.blockStartMarker}
                   onChange={(e) => setFormData({ ...formData, blockStartMarker: e.target.value })}
-                  placeholder="АрсанСофт (по умолчанию, если пусто)"
+                  placeholder="Например: КУ-001 (если пусто, блоки не выделяются)"
                 />
-                <small style={{ display: 'block', marginTop: '0.25rem', color: '#666', fontSize: '0.85rem' }}>
-                  Текст после // для начала блока (например: "АрсанСофт" или "Арс 0001"). Если пусто, используется "АрсанСофт"
-                </small>
               </div>
               <div className="form-group">
                 <label htmlFor="task-block-end-marker">Маркер конца блока кода</label>
@@ -231,10 +233,16 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
                   type="text"
                   value={formData.blockEndMarker}
                   onChange={(e) => setFormData({ ...formData, blockEndMarker: e.target.value })}
-                  placeholder="АрсанСофт (по умолчанию, если пусто)"
+                  placeholder="Например: КУ-001-END (если пусто, используется маркер начала)"
                 />
-                <small style={{ display: 'block', marginTop: '0.25rem', color: '#666', fontSize: '0.85rem' }}>
-                  Текст после // для конца блока. Если пусто, используется значение маркера начала
+              </div>
+              <div className="form-group">
+                <small style={{ display: 'block', marginTop: '0.25rem', color: '#666', fontSize: '0.85rem', lineHeight: '1.6', padding: '0.75rem', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+                  <strong>Инструкция по использованию маркеров:</strong><br/>
+                  1. Введите только текст маркера БЕЗ "//" (например: "КУ-001" или "АрсанСофт Программист2026")<br/>
+                  2. В коде используйте в начале: <code>//{'{'}Маркер начала блока кода{'}'}</code> - Пример: <code>//АрсанСофт Программист2026</code><br/>
+                  3. В коде используйте в конце: <code>//{'{'}Маркер конца блока кода{'}'}</code> - Пример: <code>//АрсанСофт Программист2026 END</code><br/>
+                  4. <strong style={{color: '#d32f2f'}}>Важно:</strong> маркеры начала и конца не должны быть одинаковыми. Если хотя бы один из маркеров пустой, блоки не будут выделяться.
                 </small>
               </div>
               <div className="form-actions">

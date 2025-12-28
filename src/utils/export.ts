@@ -1,6 +1,8 @@
 import { getActionsByTaskId, getTasks, getCodeBlocksByActionId, getScreenshotsByActionId } from './storage';
 import { ActionCodeBlock } from '../types';
-import { highlightBSL } from './prism-bsl';
+// TODO: ВЕРНУТЬ ОБРАТНО ПЕРЕД ПУБЛИКАЦИЕЙ - используем bsl-highlighter-v2 для поддержки маркеров
+// import { highlightBSL } from './prism-bsl';
+import { highlightBSL } from './bsl-highlighter-v2';
 import { getInitials } from './initials';
 import logo from '../assets/logo.png';
 
@@ -265,8 +267,9 @@ export const generateHTMLReport = async (taskId: string, userFullName?: string):
       
       // Применяем подсветку синтаксиса для BSL
       // Для <pre> тега нужно использовать \n вместо <br>
+      // TODO: ВЕРНУТЬ ОБРАТНО ПЕРЕД ПУБЛИКАЦИЕЙ - передаем маркеры из задачи
       let highlightedCode = codeBlock.language === 'BSL' 
-        ? highlightBSL(cleanCode).replace(/<br>/g, '\n')
+        ? highlightBSL(cleanCode, task.blockStartMarker, task.blockEndMarker).replace(/<br>/g, '\n')
         : cleanCode
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
