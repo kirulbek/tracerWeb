@@ -468,8 +468,8 @@ const ActionForm = ({ actionId, taskId, onSave, onCancel }: ActionFormProps) => 
       )}
 
       {showCodeEditor && (
-        <div className="modal-overlay" onClick={() => setShowCodeEditor(false)}>
-          <div className="modal-content code-editor-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay">
+          <div className="modal-content code-editor-modal">
             <CodeBlockEditor
               codeBlock={editingCodeBlock}
               onSave={handleSaveCodeBlock}

@@ -131,8 +131,8 @@ const ArchivePage = ({ onGenerateReport }: ArchivePageProps) => {
       </div>
 
       {showForm && (
-        <div className="modal-overlay" onClick={() => setShowForm(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h3>{editingTask ? 'Редактировать задачу' : 'Создать задачу'}</h3>
             <form onSubmit={handleSave}>
               <div className="form-group">

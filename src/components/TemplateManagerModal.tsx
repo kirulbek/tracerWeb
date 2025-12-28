@@ -138,8 +138,8 @@ const TemplateManagerModal = ({ onClose }: TemplateManagerModalProps) => {
   const sortedCategories = Array.from(allCategories).sort();
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content template-manager-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay">
+      <div className="modal-content template-manager-modal">
         <div className="modal-header">
           <h2>Управление шаблонами</h2>
           <button onClick={onClose} className="btn btn-secondary">Закрыть</button>

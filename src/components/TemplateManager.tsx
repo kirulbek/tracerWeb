@@ -415,8 +415,8 @@ const TemplateManager = () => {
       )}
 
       {showEditTemplateForm && editingTemplate && (
-        <div className="modal-overlay" onClick={() => { setShowEditTemplateForm(false); setEditingTemplate(null); }}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h3>Редактировать шаблон</h3>
             <EditTemplateForm
               template={editingTemplate}

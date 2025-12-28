@@ -60,8 +60,8 @@ const ManagerManager = () => {
       </div>
 
       {showForm && (
-        <div className="modal-overlay" onClick={() => setShowForm(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h3>{editingManager ? 'Редактировать менеджера' : 'Создать менеджера'}</h3>
             <form onSubmit={handleSave}>
               <div className="form-group">
