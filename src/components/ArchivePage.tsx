@@ -17,7 +17,9 @@ const ArchivePage = ({ onGenerateReport }: ArchivePageProps) => {
     description: '',
     status: 'Архив' as TaskStatus,
     notes: '',
-    managerId: ''
+    managerId: '',
+    blockStartMarker: '',
+    blockEndMarker: ''
   });
 
   // Статусы для формы (включая Архив) - такие же как в TaskManager
@@ -54,7 +56,9 @@ const ArchivePage = ({ onGenerateReport }: ArchivePageProps) => {
       description: task.description || '',
       status: task.status,
       notes: task.notes || '',
-      managerId: taskManagers.length > 0 ? taskManagers[0].id : ''
+      managerId: taskManagers.length > 0 ? taskManagers[0].id : '',
+      blockStartMarker: task.blockStartMarker || '',
+      blockEndMarker: task.blockEndMarker || ''
     });
     setShowForm(true);
   };
@@ -67,6 +71,8 @@ const ArchivePage = ({ onGenerateReport }: ArchivePageProps) => {
       description: formData.description,
       status: formData.status,
       notes: formData.notes,
+      blockStartMarker: formData.blockStartMarker.trim() === '' ? undefined : formData.blockStartMarker.trim(),
+      blockEndMarker: formData.blockEndMarker.trim() === '' ? undefined : formData.blockEndMarker.trim(),
       createdAt: editingTask?.createdAt || new Date()
     };
 
@@ -180,14 +186,43 @@ const ArchivePage = ({ onGenerateReport }: ArchivePageProps) => {
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="task-notes">Заметки (логины, пароли и т.д.)</label>
+                <label htmlFor="task-notes">Заметки</label>
                 <textarea
                   id="task-notes"
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={3}
-                  placeholder="Логины, пароли, доступы и другая информация"
+                  placeholder="Другая информация"
                 />
+              </div>
+              <div className="form-group">
+                <label htmlFor="task-block-start-marker">Маркер начала блока кода</label>
+                <input
+                  id="task-block-start-marker"
+                  type="text"
+                  value={formData.blockStartMarker}
+                  onChange={(e) => setFormData({ ...formData, blockStartMarker: e.target.value })}
+                  placeholder="Например: КУ-001 (если пусто, блоки не выделяются)"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="task-block-end-marker">Маркер конца блока кода</label>
+                <input
+                  id="task-block-end-marker"
+                  type="text"
+                  value={formData.blockEndMarker}
+                  onChange={(e) => setFormData({ ...formData, blockEndMarker: e.target.value })}
+                  placeholder="Например: КУ-001-END (если пусто, используется маркер начала)"
+                />
+              </div>
+              <div className="form-group">
+                <small style={{ display: 'block', marginTop: '0.25rem', color: '#666', fontSize: '0.85rem', lineHeight: '1.6', padding: '0.75rem', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+                  <strong>Инструкция по использованию маркеров:</strong><br/>
+                  1. Введите только текст маркера БЕЗ "//" (например: "КУ-001" или "АрсанСофт Программист2026")<br/>
+                  2. В коде используйте в начале: <code>//{'{'}Маркер начала блока кода{'}'}</code> - Пример: <code>//АрсанСофт Программист2026</code><br/>
+                  3. В коде используйте в конце: <code>//{'{'}Маркер конца блока кода{'}'}</code> - Пример: <code>//АрсанСофт Программист2026 END</code><br/>
+                  4. <strong style={{color: '#d32f2f'}}>Важно:</strong> маркеры начала и конца не должны быть одинаковыми. Если хотя бы один из маркеров пустой, блоки не будут выделяться.
+                </small>
               </div>
               <div className="form-actions">
                 <button type="submit" className="btn btn-primary">Сохранить</button>

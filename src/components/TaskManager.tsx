@@ -207,13 +207,13 @@ const TaskManager = ({ onGenerateReport, onAddAction }: TaskManagerProps) => {
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="task-notes">Заметки (логины, пароли и т.д.)</label>
+                <label htmlFor="task-notes">Заметки</label>
                 <textarea
                   id="task-notes"
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={3}
-                  placeholder="Логины, пароли, доступы и другая информация"
+                  placeholder="Другая информация"
                 />
               </div>
               <div className="form-group">
