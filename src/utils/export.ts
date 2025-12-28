@@ -442,8 +442,8 @@ export const generateCompactReport = async (taskId: string, userFullName?: strin
   <table>
     <thead>
       <tr>
-        <th style="width: 25%;">Название</th>
-        <th style="width: 60%;">Короткое описание</th>
+        <th style="width: 42.5%;">Название</th>
+        <th style="width: 42.5%;">Короткое описание</th>
         <th style="width: 15%;">Затраченное время</th>
       </tr>
     </thead>
