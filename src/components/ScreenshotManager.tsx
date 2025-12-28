@@ -107,7 +107,15 @@ const ScreenshotManager = ({ screenshots, onAdd, onDelete }: ScreenshotManagerPr
   }, []);
 
   return (
-    <div ref={containerRef} className="screenshots-section">
+    <div 
+      ref={containerRef} 
+      className="screenshots-section"
+      style={{
+        minHeight: '200px',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
       <div className="section-header">
         <h3>Скриншоты</h3>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -136,8 +144,44 @@ const ScreenshotManager = ({ screenshots, onAdd, onDelete }: ScreenshotManagerPr
           style={{ display: 'none' }}
         />
       </div>
-      {screenshots.length > 0 && (
-        <div className="screenshots-list">
+      
+      {screenshots.length === 0 ? (
+        <div 
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px dashed #ddd',
+            borderRadius: '8px',
+            padding: '2rem',
+            marginTop: '1rem',
+            backgroundColor: '#f9f9f9',
+            textAlign: 'center',
+            color: '#666',
+            fontSize: '0.95rem',
+            minHeight: '120px'
+          }}
+        >
+          <div>
+            <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>📋</div>
+            <div style={{ fontWeight: 500, marginBottom: '0.25rem' }}>
+              Используйте <kbd style={{ 
+                backgroundColor: '#fff', 
+                padding: '0.25rem 0.5rem', 
+                borderRadius: '4px',
+                border: '1px solid #ddd',
+                fontSize: '0.9rem',
+                fontWeight: 'bold'
+              }}>Ctrl + V</kbd> для вставки изображения
+            </div>
+            <div style={{ fontSize: '0.85rem', opacity: 0.8 }}>
+              или выберите файл через кнопку "+"
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="screenshots-list" style={{ marginTop: '1rem' }}>
           {screenshots.map((screenshot) => (
             <div key={screenshot.id} className="screenshot-item">
               <img src={screenshot.dataUrl} alt="Скриншот" />
