@@ -165,18 +165,14 @@ export async function saveAction(action: Action): Promise<Action> {
     orderIndex: action.orderIndex
   };
 
-  // При создании нового действия отправляем время клиента в ISO формате
-  if (!action.id || !action.id.startsWith('action-') || action.id.length <= 20) {
-    actionData.createdAt = action.createdAt.toISOString();
-  }
-
   // Проверяем, существует ли действие (если ID начинается с 'action-' и имеет правильный формат)
   if (action.id && action.id.startsWith('action-') && action.id.length > 20) {
-    // Обновление существующего действия
+    // Обновление существующего действия - не отправляем createdAt
     const updated = await api.put<any>(`/actions/${action.id}`, actionData);
     return convertActionFromApi(updated);
   } else {
-    // Создание нового действия (API вернет новое действие с ID)
+    // Создание нового действия - отправляем время клиента в ISO формате
+    actionData.createdAt = action.createdAt.toISOString();
     const created = await api.post<any>('/actions', actionData);
     return convertActionFromApi(created);
   }
