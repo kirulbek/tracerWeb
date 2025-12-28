@@ -191,8 +191,7 @@ const Layout = ({
           padding: '0 2rem' 
         }}>
           <p>&copy; 2025 Трассировка изменений 1С</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>Разработано</span>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ 
               backgroundColor: 'white', 
               padding: '0.4rem 0.8rem', 
